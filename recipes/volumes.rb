@@ -53,7 +53,7 @@ node[:ebs][:volumes].each do |mount_point, options|
   mount mount_point do
     fstype options[:fstype]
     device device
-    options 'noatime,nobootwait'
+    options options[:mount_options]
     action [:mount, :enable]
   end
 

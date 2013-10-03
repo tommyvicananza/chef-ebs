@@ -100,7 +100,7 @@ node[:ebs][:raids].each do |raid_device, options|
   mount options[:mount_point] do
     fstype options[:fstype]
     device lazy{ node[:ebs][:devicetomount] }
-    options "noatime"
+    options options[:mount_options]
     not_if do
       File.read('/etc/mtab').split("\n").any?{|line| line.match(" #{options[:mount_point]} ")}
     end
