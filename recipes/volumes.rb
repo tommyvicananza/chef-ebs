@@ -14,6 +14,12 @@ node[:ebs][:volumes].each do |mount_point, options|
     devices = Dir.glob('/dev/xvd?')
     devices = ['/dev/xvdf'] if devices.empty?
     devid = devices.sort.last[-1,1].succ
+     # due to error: Invalid value '/dev/sdc' for unixDevice. Attachment point /dev/sdc is already in use
+    if node["platform"] == "ubuntu"
+      if devid == "c"
+         devid = devid.succ
+      end
+    end
     device = "/dev/sd#{devid}"
 
     vol = aws_ebs_volume device do
