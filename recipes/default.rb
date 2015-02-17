@@ -34,5 +34,17 @@ if BlockDevice.on_kvm?
 
 end
 
+groups = node[:ebs][:groups]
+unless groups.nil? 
+  groups.each do | groupId|
+    unless node[:ebs][groupId].nil? || node[:ebs][groupId].empty? 
+      Chef::Log.info "Attaching EBS(s) from group #{groupId}"
+      group = node[:ebs][groupId]
+      node.force_override[:ebs][:raids] = node[:ebs][:raids].merge(group[:raids]) unless group[:raids].nil?
+      node.force_override[:ebs][:volumes] = node[:ebs][:volumes].merge(group[:volumes]) unless group[:volumes].nil?
+    end
+  end
+end
+
 include_recipe "ebs::volumes" unless node[:ebs][:volumes].empty?
 include_recipe "ebs::raids" unless node[:ebs][:raids].empty?
